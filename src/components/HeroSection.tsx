@@ -48,7 +48,8 @@ export const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
                 size="lg" 
-                className="gradient-bg text-primary-foreground font-semibold text-lg px-8 py-6 glow hover:opacity-90 transition-all group"
+                className="gradient-bg text-primary-foreground font-semibold text-lg px-8 py-6 glow hover:opacity-90 transition-all group cursor-pointer"
+                onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Agendar Llamada Gratis
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
@@ -56,7 +57,8 @@ export const HeroSection = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="font-semibold text-lg px-8 py-6 border-2"
+                className="font-semibold text-lg px-8 py-6 border-2 cursor-pointer"
+                onClick={() => document.getElementById('portafolio')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Ver Portafolio
               </Button>

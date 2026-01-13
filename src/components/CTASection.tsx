@@ -27,7 +27,8 @@ export const CTASection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-primary font-semibold text-lg px-8 py-6 hover:bg-white/90 transition-colors group"
+              className="bg-white text-primary font-semibold text-lg px-8 py-6 hover:bg-white/90 transition-colors group cursor-pointer"
+              onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <Calendar className="mr-2" size={20} />
               Agendar Llamada Gratis

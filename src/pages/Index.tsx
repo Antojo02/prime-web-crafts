@@ -7,10 +7,13 @@ import { FAQSection } from "@/components/FAQSection";
 import { ContactSection } from "@/components/ContactSection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { FloatingTechElements } from "@/components/FloatingTechElements";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <FloatingTechElements />
       <Navbar />
       <HeroSection />
       <ServicesSection />
@@ -20,6 +23,7 @@ const Index = () => {
       <CTASection />
       <ContactSection />
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 };
