@@ -191,7 +191,7 @@ export const WhatsAppChat = () => {
                 </span>
                 <span className="flex items-center gap-1">
                   <Phone size={12} />
-                  +34 672 616 466
+                  +34 672 861 646
                 </span>
               </div>
             </div>
