@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Clock, CheckCheck, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Clock, CheckCheck, Loader2, User, Briefcase, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgooedeg";
+const WHATSAPP_NUMBER = "34672861646";
 
 interface Message {
   id: string;
@@ -14,46 +15,72 @@ interface Message {
   status?: "sending" | "sent" | "error";
 }
 
-const quickMessages = [
-  "Hola, quiero información sobre sus servicios",
-  "Me interesa crear una página web",
-  "¿Cuánto cuesta una web profesional?",
-  "Quiero agendar una llamada gratuita",
+interface UserData {
+  nombre: string;
+  apellidos: string;
+  email: string;
+  tipoProyecto: string;
+  presupuesto: string;
+  descripcion: string;
+}
+
+type ConversationStep = 
+  | "welcome" 
+  | "nombre" 
+  | "apellidos" 
+  | "email"
+  | "tipoProyecto" 
+  | "presupuesto" 
+  | "descripcion" 
+  | "resumen"
+  | "finalizado";
+
+const projectTypes = [
+  "Página web corporativa",
+  "Tienda online / E-commerce",
+  "Landing page",
+  "Blog / Portal de noticias",
+  "Aplicación web",
+  "Rediseño web",
+  "Otro",
 ];
 
-const botResponses: Record<string, string> = {
-  default: "¡Gracias por tu mensaje! Te responderemos muy pronto. Si es urgente, puedes llamarnos al +34 672 861 646.",
-  servicios: "Ofrecemos diseño web, desarrollo a medida, SEO, y mantenimiento. ¿Qué tipo de proyecto tienes en mente?",
-  precio: "Nuestros precios van desde 497€ para webs básicas hasta proyectos enterprise. ¿Te gustaría ver nuestra página de precios?",
-  llamada: "¡Perfecto! Agenda una llamada gratuita en nuestra sección de contacto. Te contactaremos en menos de 24h.",
-};
+const budgetRanges = [
+  "Menos de 500€",
+  "500€ - 1.000€",
+  "1.000€ - 2.500€",
+  "2.500€ - 5.000€",
+  "Más de 5.000€",
+  "No estoy seguro",
+];
 
-const getBotResponse = (message: string): string => {
-  const lowerMessage = message.toLowerCase();
-  if (lowerMessage.includes("servicio") || lowerMessage.includes("información")) {
-    return botResponses.servicios;
-  }
-  if (lowerMessage.includes("precio") || lowerMessage.includes("cuesta") || lowerMessage.includes("costo")) {
-    return botResponses.precio;
-  }
-  if (lowerMessage.includes("llamada") || lowerMessage.includes("agendar") || lowerMessage.includes("cita")) {
-    return botResponses.llamada;
-  }
-  return botResponses.default;
+const stepMessages: Record<ConversationStep, string> = {
+  welcome: "¡Hola! 👋 Soy el asistente virtual de PRIME WEB. Estoy aquí para conocer tu proyecto y conectarte con nuestro equipo. ¿Comenzamos?",
+  nombre: "¡Perfecto! Para comenzar, ¿cuál es tu nombre?",
+  apellidos: "Encantado de conocerte. ¿Cuáles son tus apellidos?",
+  email: "¿Cuál es tu correo electrónico para poder contactarte?",
+  tipoProyecto: "¿Qué tipo de proyecto tienes en mente?",
+  presupuesto: "¿Cuál es tu presupuesto aproximado para este proyecto?",
+  descripcion: "Cuéntame más sobre tu proyecto. ¿Qué necesitas exactamente? ¿Tienes alguna referencia o idea en mente?",
+  resumen: "",
+  finalizado: "¡Gracias por tu tiempo! Antonio se pondrá en contacto contigo muy pronto. 🚀",
 };
 
 export const LiveChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      text: "¡Hola! 👋 Bienvenido a PRIME WEB. ¿En qué podemos ayudarte hoy?",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [currentStep, setCurrentStep] = useState<ConversationStep>("welcome");
+  const [userData, setUserData] = useState<UserData>({
+    nombre: "",
+    apellidos: "",
+    email: "",
+    tipoProyecto: "",
+    presupuesto: "",
+    descripcion: "",
+  });
+  const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,7 +98,118 @@ export const LiveChat = () => {
     }
   }, [isOpen]);
 
-  const sendToFormspree = async (text: string) => {
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      // Initial welcome message
+      addBotMessage(stepMessages.welcome);
+    }
+  }, [isOpen]);
+
+  const addBotMessage = (text: string, delay: number = 800) => {
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          text,
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    }, delay);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const processUserResponse = (text: string) => {
+    const updatedData = { ...userData };
+
+    switch (currentStep) {
+      case "welcome":
+        setCurrentStep("nombre");
+        addBotMessage(stepMessages.nombre);
+        break;
+
+      case "nombre":
+        if (text.trim().length < 2) {
+          addBotMessage("Por favor, introduce un nombre válido (mínimo 2 caracteres).");
+          return;
+        }
+        updatedData.nombre = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("apellidos");
+        addBotMessage(stepMessages.apellidos);
+        break;
+
+      case "apellidos":
+        if (text.trim().length < 2) {
+          addBotMessage("Por favor, introduce tus apellidos (mínimo 2 caracteres).");
+          return;
+        }
+        updatedData.apellidos = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("email");
+        addBotMessage(stepMessages.email);
+        break;
+
+      case "email":
+        if (!validateEmail(text.trim())) {
+          addBotMessage("Por favor, introduce un correo electrónico válido (ejemplo: tu@email.com).");
+          return;
+        }
+        updatedData.email = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("tipoProyecto");
+        addBotMessage(stepMessages.tipoProyecto);
+        break;
+
+      case "tipoProyecto":
+        updatedData.tipoProyecto = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("presupuesto");
+        addBotMessage(stepMessages.presupuesto);
+        break;
+
+      case "presupuesto":
+        updatedData.presupuesto = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("descripcion");
+        addBotMessage(stepMessages.descripcion);
+        break;
+
+      case "descripcion":
+        if (text.trim().length < 10) {
+          addBotMessage("Por favor, describe tu proyecto con más detalle (mínimo 10 caracteres).");
+          return;
+        }
+        updatedData.descripcion = text.trim();
+        setUserData(updatedData);
+        setCurrentStep("resumen");
+        showSummary(updatedData);
+        break;
+    }
+  };
+
+  const showSummary = (data: UserData) => {
+    const summaryText = `📋 Resumen de tu consulta:
+
+👤 Nombre: ${data.nombre} ${data.apellidos}
+📧 Email: ${data.email}
+🎯 Proyecto: ${data.tipoProyecto}
+💰 Presupuesto: ${data.presupuesto}
+📝 Descripción: ${data.descripcion}
+
+¿Los datos son correctos? Haz clic en "Enviar y Contactar" para finalizar y hablar con Antonio directamente.`;
+
+    addBotMessage(summaryText, 1000);
+  };
+
+  const sendToFormspree = async (data: UserData): Promise<boolean> => {
     try {
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
@@ -79,9 +217,14 @@ export const LiveChat = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: text,
+          nombre: data.nombre,
+          apellidos: data.apellidos,
+          email: data.email,
+          tipoProyecto: data.tipoProyecto,
+          presupuesto: data.presupuesto,
+          descripcion: data.descripcion,
           timestamp: new Date().toISOString(),
-          source: "Live Chat",
+          source: "Chat IA - PRIME WEB",
         }),
       });
 
@@ -95,50 +238,62 @@ export const LiveChat = () => {
     }
   };
 
+  const openWhatsApp = (data: UserData) => {
+    const message = encodeURIComponent(
+`🚀 *NUEVA CONSULTA - PRIME WEB*
+
+👤 *Nombre:* ${data.nombre} ${data.apellidos}
+📧 *Email:* ${data.email}
+🎯 *Tipo de proyecto:* ${data.tipoProyecto}
+💰 *Presupuesto:* ${data.presupuesto}
+📝 *Descripción:* ${data.descripcion}
+
+---
+Enviado desde el chat de PRIME WEB`
+    );
+    
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+  };
+
+  const handleFinalize = async () => {
+    setIsSending(true);
+    
+    // Send to Formspree first
+    const success = await sendToFormspree(userData);
+    
+    if (success) {
+      // Add final message
+      addBotMessage(stepMessages.finalizado, 500);
+      setCurrentStep("finalizado");
+      
+      // Wait a moment then open WhatsApp
+      setTimeout(() => {
+        openWhatsApp(userData);
+        toast.success("¡Datos enviados! Te redirigimos a WhatsApp para contactar con Antonio.");
+        setIsSending(false);
+      }, 1500);
+    } else {
+      toast.error("Error al enviar. Por favor, intenta de nuevo.");
+      setIsSending(false);
+    }
+  };
+
   const handleSendMessage = async (text?: string) => {
     const finalMessage = text || message;
-    if (!finalMessage.trim()) return;
+    if (!finalMessage.trim() || currentStep === "finalizado") return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: finalMessage,
       sender: "user",
       timestamp: new Date(),
-      status: "sending",
+      status: "sent",
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
-    setIsTyping(true);
 
-    // Send to Formspree
-    const success = await sendToFormspree(finalMessage);
-
-    // Update message status
-    setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === userMessage.id
-          ? { ...msg, status: success ? "sent" : "error" }
-          : msg
-      )
-    );
-
-    if (success) {
-      // Simulate bot typing
-      setTimeout(() => {
-        setIsTyping(false);
-        const botMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: getBotResponse(finalMessage),
-          sender: "bot",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
-      }, 1500);
-    } else {
-      setIsTyping(false);
-      toast.error("No se pudo enviar el mensaje. Intenta de nuevo.");
-    }
+    processUserResponse(finalMessage);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -150,6 +305,156 @@ export const LiveChat = () => {
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const handleQuickOption = (option: string) => {
+    handleSendMessage(option);
+  };
+
+  const resetConversation = () => {
+    setMessages([]);
+    setCurrentStep("welcome");
+    setUserData({
+      nombre: "",
+      apellidos: "",
+      email: "",
+      tipoProyecto: "",
+      presupuesto: "",
+      descripcion: "",
+    });
+    addBotMessage(stepMessages.welcome);
+  };
+
+  const renderQuickOptions = () => {
+    if (currentStep === "welcome") {
+      return (
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => handleSendMessage("¡Sí, comencemos!")}
+            className="text-xs px-3 py-1.5 bg-primary text-primary-foreground rounded-full transition-colors hover:opacity-90 flex items-center gap-1"
+          >
+            ¡Sí, comencemos! <ArrowRight size={12} />
+          </button>
+        </div>
+      );
+    }
+
+    if (currentStep === "tipoProyecto") {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {projectTypes.map((type, index) => (
+            <button
+              key={index}
+              onClick={() => handleQuickOption(type)}
+              className="text-xs px-3 py-1.5 bg-secondary hover:bg-primary/20 rounded-full transition-colors"
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      );
+    }
+
+    if (currentStep === "presupuesto") {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {budgetRanges.map((range, index) => (
+            <button
+              key={index}
+              onClick={() => handleQuickOption(range)}
+              className="text-xs px-3 py-1.5 bg-secondary hover:bg-primary/20 rounded-full transition-colors"
+            >
+              {range}
+            </button>
+          ))}
+        </div>
+      );
+    }
+
+    if (currentStep === "resumen") {
+      return (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={handleFinalize}
+            disabled={isSending}
+            className="gradient-bg text-primary-foreground text-sm px-4 py-2 rounded-full flex items-center gap-2"
+          >
+            {isSending ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                Enviando...
+              </>
+            ) : (
+              <>
+                <Send size={14} />
+                Enviar y Contactar
+              </>
+            )}
+          </Button>
+          <button
+            onClick={resetConversation}
+            className="text-xs px-3 py-1.5 bg-secondary hover:bg-destructive/20 rounded-full transition-colors"
+          >
+            Empezar de nuevo
+          </button>
+        </div>
+      );
+    }
+
+    if (currentStep === "finalizado") {
+      return (
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={resetConversation}
+            className="text-xs px-3 py-1.5 bg-primary text-primary-foreground rounded-full transition-colors hover:opacity-90"
+          >
+            Nueva consulta
+          </button>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const getInputPlaceholder = (): string => {
+    switch (currentStep) {
+      case "nombre":
+        return "Escribe tu nombre...";
+      case "apellidos":
+        return "Escribe tus apellidos...";
+      case "email":
+        return "tu@email.com";
+      case "tipoProyecto":
+        return "Selecciona o escribe el tipo...";
+      case "presupuesto":
+        return "Selecciona tu presupuesto...";
+      case "descripcion":
+        return "Describe tu proyecto con detalle...";
+      default:
+        return "Escribe tu mensaje...";
+    }
+  };
+
+  const getStepIcon = () => {
+    switch (currentStep) {
+      case "nombre":
+      case "apellidos":
+      case "email":
+        return <User size={14} className="text-muted-foreground" />;
+      case "tipoProyecto":
+      case "presupuesto":
+      case "descripcion":
+        return <Briefcase size={14} className="text-muted-foreground" />;
+      default:
+        return null;
+    }
+  };
+
+  const getProgressPercentage = (): number => {
+    const steps: ConversationStep[] = ["welcome", "nombre", "apellidos", "email", "tipoProyecto", "presupuesto", "descripcion", "resumen", "finalizado"];
+    const currentIndex = steps.indexOf(currentStep);
+    return Math.round(((currentIndex + 1) / steps.length) * 100);
   };
 
   return (
@@ -195,7 +500,7 @@ export const LiveChat = () => {
         )}
 
         {/* Notification badge */}
-        {!isOpen && messages.length === 1 && (
+        {!isOpen && messages.length === 0 && (
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -215,8 +520,8 @@ export const LiveChat = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, type: "spring" }}
-            className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] bg-background rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
-            style={{ maxHeight: "500px" }}
+            className="fixed bottom-24 right-6 z-50 w-[400px] max-w-[calc(100vw-48px)] bg-background rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
+            style={{ maxHeight: "550px" }}
           >
             {/* Header */}
             <div className="gradient-bg p-4 text-primary-foreground shrink-0">
@@ -228,7 +533,7 @@ export const LiveChat = () => {
                   <h3 className="font-bold text-lg">PRIME WEB</h3>
                   <div className="flex items-center gap-1 text-sm opacity-90">
                     <span className="w-2 h-2 rounded-full bg-green-300 animate-pulse" />
-                    Chat en vivo
+                    Asistente Virtual
                   </div>
                 </div>
                 <button
@@ -238,6 +543,21 @@ export const LiveChat = () => {
                   <X size={20} />
                 </button>
               </div>
+              
+              {/* Progress bar */}
+              {currentStep !== "welcome" && currentStep !== "finalizado" && (
+                <div className="mt-3">
+                  <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-white"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${getProgressPercentage()}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1 opacity-80">Progreso: {getProgressPercentage()}%</p>
+                </div>
+              )}
             </div>
 
             {/* Messages Area */}
@@ -255,13 +575,13 @@ export const LiveChat = () => {
                     </div>
                   )}
                   <div
-                    className={`p-3 rounded-2xl max-w-[75%] ${
+                    className={`p-3 rounded-2xl max-w-[80%] ${
                       msg.sender === "user"
                         ? "bg-primary text-primary-foreground rounded-br-none"
                         : "bg-background rounded-tl-none shadow-sm"
                     }`}
                   >
-                    <p className="text-sm">{msg.text}</p>
+                    <p className="text-sm whitespace-pre-line">{msg.text}</p>
                     <div className="flex items-center justify-end gap-1 mt-1">
                       <span className="text-[10px] opacity-70">{formatTime(msg.timestamp)}</span>
                       {msg.sender === "user" && msg.status === "sent" && (
@@ -298,53 +618,48 @@ export const LiveChat = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Messages */}
-            {messages.length <= 2 && (
+            {/* Quick Options */}
+            {renderQuickOptions() && (
               <div className="p-3 border-t border-border bg-background/50 shrink-0">
-                <p className="text-xs text-muted-foreground mb-2">Mensajes rápidos:</p>
-                <div className="flex flex-wrap gap-2">
-                  {quickMessages.slice(0, 2).map((msg, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSendMessage(msg)}
-                      className="text-xs px-3 py-1.5 bg-secondary hover:bg-primary/10 rounded-full transition-colors"
-                    >
-                      {msg.slice(0, 25)}...
-                    </button>
-                  ))}
-                </div>
+                <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                  {getStepIcon()}
+                  Opciones rápidas:
+                </p>
+                {renderQuickOptions()}
               </div>
             )}
 
             {/* Input Area */}
-            <div className="p-3 border-t border-border bg-background shrink-0">
-              <div className="flex gap-2">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Escribe tu mensaje..."
-                  className="flex-1 px-4 py-2 bg-muted rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                />
-                <Button
-                  onClick={() => handleSendMessage()}
-                  size="icon"
-                  className="rounded-full gradient-bg hover:opacity-90 shrink-0"
-                  disabled={!message.trim()}
-                >
-                  <Send size={18} className="text-primary-foreground" />
-                </Button>
+            {currentStep !== "resumen" && currentStep !== "finalizado" && (
+              <div className="p-3 border-t border-border bg-background shrink-0">
+                <div className="flex gap-2">
+                  <input
+                    ref={inputRef}
+                    type={currentStep === "email" ? "email" : "text"}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={getInputPlaceholder()}
+                    className="flex-1 px-4 py-2 bg-muted rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                  <Button
+                    onClick={() => handleSendMessage()}
+                    size="icon"
+                    className="rounded-full gradient-bg hover:opacity-90 shrink-0"
+                    disabled={!message.trim()}
+                  >
+                    <Send size={18} className="text-primary-foreground" />
+                  </Button>
+                </div>
+                <div className="flex items-center justify-center gap-4 mt-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock size={12} />
+                    Respuesta inmediata
+                  </span>
+                  <span>+34 672 861 646</span>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-4 mt-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Clock size={12} />
-                  Respuesta rápida
-                </span>
-                <span>+34 672 861 646</span>
-              </div>
-            </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
