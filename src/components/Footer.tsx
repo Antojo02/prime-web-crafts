@@ -10,8 +10,8 @@ const footerLinks = {
   ],
   empresa: [
     { name: "Portafolio", href: "#portafolio" },
+    { name: "Precios", href: "/precios" },
     { name: "Testimonios", href: "#testimonios" },
-    { name: "Blog", href: "#" },
     { name: "Contacto", href: "#contacto" },
   ],
   legal: [

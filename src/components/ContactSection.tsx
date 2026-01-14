@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Send, Phone, Mail, MapPin, MessageCircle, Calendar, Linkedin } from "lucide-react";
+import { Send, Phone, Mail, MapPin, MessageCircle, Calendar, Linkedin, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,13 +9,17 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
-const WHATSAPP_NUMBER = "34672616466";
+const WHATSAPP_NUMBER = "34672861646";
 const LINKEDIN_URL = "https://www.linkedin.com/in/antoniojosetortajada";
 const EMAIL = "antoniojosetortajada2002@gmail.com";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgooedeg";
 
 export const ContactSection = () => {
   const [date, setDate] = useState<Date>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,10 +27,33 @@ export const ContactSection = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData, "Date:", date);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          preferredDate: date ? format(date, "PPP", { locale: es }) : "No especificada",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Error al enviar");
+
+      setIsSubmitted(true);
+      toast.success("¡Mensaje enviado correctamente! Te contactaremos pronto.");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setDate(undefined);
+    } catch (error) {
+      toast.error("Error al enviar el mensaje. Intenta de nuevo.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleWhatsAppClick = () => {
@@ -108,7 +135,7 @@ export const ContactSection = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">WhatsApp</p>
-                    <p className="font-medium">+34 672 616 466</p>
+                    <p className="font-medium">+34 672 861 646</p>
                   </div>
                 </a>
 
@@ -256,9 +283,24 @@ export const ContactSection = () => {
                   type="submit" 
                   size="lg" 
                   className="w-full gradient-bg text-primary-foreground font-semibold glow hover:opacity-90 transition-opacity cursor-pointer"
+                  disabled={isSubmitting || isSubmitted}
                 >
-                  Enviar Mensaje
-                  <Send className="ml-2" size={18} />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 animate-spin" size={18} />
+                      Enviando...
+                    </>
+                  ) : isSubmitted ? (
+                    <>
+                      <CheckCircle className="mr-2" size={18} />
+                      ¡Mensaje Enviado!
+                    </>
+                  ) : (
+                    <>
+                      Enviar Mensaje
+                      <Send className="ml-2" size={18} />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
