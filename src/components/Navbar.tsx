@@ -11,6 +11,7 @@ const navLinks = [
   { name: "Testimonios", href: "#testimonios" },
   { name: "FAQ", href: "#faq" },
   { name: "Contacto", href: "#contacto" },
+  { name: "Trabaja con Nosotros", href: "/trabaja-con-nosotros" },
 ];
 
 export const Navbar = () => {
