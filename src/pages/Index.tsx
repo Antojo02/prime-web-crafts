@@ -3,7 +3,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { PortfolioSection } from "@/components/PortfolioSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
-import { WhatsAppChat } from "@/components/WhatsAppChat";
+import { LiveChat } from "@/components/LiveChat";
 import { FAQSection } from "@/components/FAQSection";
 import { ContactSection } from "@/components/ContactSection";
 import { CTASection } from "@/components/CTASection";
@@ -23,7 +23,7 @@ const Index = () => {
       <CTASection />
       <ContactSection />
       <Footer />
-      <WhatsAppChat />
+      <LiveChat />
     </div>
   );
 };
