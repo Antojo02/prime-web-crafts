@@ -28,6 +28,14 @@ const projects = [
     color: "from-purple-500 to-pink-600",
     tech: ["Next.js", "TypeScript", "Tailwind"],
   },
+  {
+    title: "Magna Master Institute",
+    category: "Educación",
+    description: "Instituto de formación profesional con programas de maestría y certificaciones internacionales",
+    url: "https://magnamasterinstitute.com/",
+    color: "from-amber-500 to-orange-600",
+    tech: ["WordPress", "LMS", "PHP"],
+  },
 ];
 
 const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {

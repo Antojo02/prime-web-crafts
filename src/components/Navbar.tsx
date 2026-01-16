@@ -1,17 +1,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-const navLinks = [
-  { name: "Inicio", href: "#inicio" },
-  { name: "Servicios", href: "#servicios" },
-  { name: "Portafolio", href: "#portafolio" },
-  { name: "Precios", href: "/precios" },
-  { name: "Testimonios", href: "#testimonios" },
-  { name: "FAQ", href: "#faq" },
-  { name: "Contacto", href: "#contacto" },
-  { name: "Trabaja con Nosotros", href: "/trabaja-con-nosotros" },
+interface NavLink {
+  name: string;
+  href: string;
+  isExternal: boolean;
+}
+
+const navLinks: NavLink[] = [
+  { name: "Inicio", href: "/", isExternal: false },
+  { name: "Servicios", href: "/#servicios", isExternal: false },
+  { name: "Portafolio", href: "/#portafolio", isExternal: false },
+  { name: "Blog", href: "/blog", isExternal: false },
+  { name: "Precios", href: "/precios", isExternal: false },
+  { name: "Testimonios", href: "/#testimonios", isExternal: false },
+  { name: "Contacto", href: "/#contacto", isExternal: false },
+  { name: "Trabaja con Nosotros", href: "/trabaja-con-nosotros", isExternal: false },
 ];
 
 export const Navbar = () => {
@@ -27,26 +34,40 @@ export const Navbar = () => {
       <div className="container-tight">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-display font-bold text-xl">P</span>
             </div>
             <span className="font-display font-bold text-xl">
               PRIME <span className="gradient-text">WEB</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.name}
-              </a>
-            ))}
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => {
+              const isHashLink = link.href.includes('#');
+              if (isHashLink) {
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                );
+              }
+              return (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* CTA Button */}
@@ -76,16 +97,31 @@ export const Navbar = () => {
             className="md:hidden bg-background border-t"
           >
             <div className="container-tight py-4 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isHashLink = link.href.includes('#');
+                if (isHashLink) {
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
+                    >
+                      {link.name}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               <Button className="gradient-bg text-primary-foreground font-semibold w-full mt-2">
                 Agendar Llamada
               </Button>
