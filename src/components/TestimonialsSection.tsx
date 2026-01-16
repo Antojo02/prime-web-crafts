@@ -99,8 +99,8 @@ export const TestimonialsSection = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16"
         >
           {[
-            { value: "100+", label: "Proyectos Completados" },
-            { value: "50+", label: "Clientes Satisfechos" },
+            { value: "5+", label: "Años de Experiencia" },
+            { value: "15+", label: "Clientes Activos" },
             { value: "4.9", label: "Calificación Promedio" },
             { value: "24/7", label: "Soporte Disponible" },
           ].map((stat, index) => (
