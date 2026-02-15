@@ -18,7 +18,7 @@ const projects = [
     description: "Plataforma educativa universitaria con cursos online y gestión académica",
     url: "https://mundaeuniversidad.com/",
     color: "from-blue-500 to-indigo-600",
-    tech: ["React", "Node.js", "MongoDB"],
+    tech: ["Astro", "Content Islands", "CSS"],
   },
   {
     title: "Xpera",
@@ -34,7 +34,7 @@ const projects = [
     description: "Instituto de formación profesional con programas de maestría y certificaciones internacionales",
     url: "https://magnamasterinstitute.com/",
     color: "from-amber-500 to-orange-600",
-    tech: ["WordPress", "LMS", "PHP"],
+    tech: ["Astro", "Content Islands", "SSG"],
   },
 ];
 
