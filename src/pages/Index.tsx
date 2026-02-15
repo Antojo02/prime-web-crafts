@@ -13,6 +13,7 @@ import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
 import { FloatingTechElements } from "@/components/FloatingTechElements";
 import { BackToTop } from "@/components/BackToTop";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const Index = () => {
   return (
@@ -32,6 +33,7 @@ const Index = () => {
       <Footer />
       <LiveChat />
       <BackToTop />
+      <CookieConsent />
     </div>
   );
 };
