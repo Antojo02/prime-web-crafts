@@ -36,6 +36,14 @@ const projects = [
     color: "from-rose-500 to-red-600",
     tech: ["WordPress", "PHP", "CSS"],
   },
+  {
+    title: "Automatium AI",
+    category: "Inteligencia Artificial",
+    description: "Plataforma de automatización inteligente con agentes de IA para procesos empresariales",
+    url: "https://automatium.ai/",
+    color: "from-violet-500 to-purple-600",
+    tech: ["React", "AI", "Next.js"],
+  },
 ];
 
 const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
