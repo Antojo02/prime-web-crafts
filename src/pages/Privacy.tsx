@@ -25,7 +25,7 @@ export default function Privacy() {
             <p>El tratamiento se basa en el consentimiento del interesado y en el interés legítimo para la gestión de clientes potenciales.</p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-8">5. Derechos del Usuario</h2>
-            <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un email a antoniojosetortajada2002@gmail.com.</p>
+            <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un email a primeweb236@gmail.com.</p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-8">6. Conservación</h2>
             <p>Los datos se conservarán mientras exista una relación comercial o durante el tiempo necesario para cumplir obligaciones legales.</p>

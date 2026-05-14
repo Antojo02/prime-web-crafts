@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "34672861646";
 const LINKEDIN_URL = "https://www.linkedin.com/in/antoniojosetortajada";
-const EMAIL = "antoniojosetortajada2002@gmail.com";
+const EMAIL = "primeweb236@gmail.com";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgooedeg";
 
 export const ContactSection = () => {
