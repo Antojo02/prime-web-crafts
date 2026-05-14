@@ -1,12 +1,15 @@
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
+import { MetricsSection } from "@/components/MetricsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { TechStackSection } from "@/components/TechStackSection";
 import { ProcessSection } from "@/components/ProcessSection";
+import { AboutSection } from "@/components/AboutSection";
 import { PortfolioSection } from "@/components/PortfolioSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { BookingSection } from "@/components/BookingSection";
 import { LiveChat } from "@/components/LiveChat";
+import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
 import { FAQSection } from "@/components/FAQSection";
 import { ContactSection } from "@/components/ContactSection";
 import { CTASection } from "@/components/CTASection";
@@ -21,9 +24,11 @@ const Index = () => {
       <FloatingTechElements />
       <Navbar />
       <HeroSection />
+      <MetricsSection />
       <ServicesSection />
       <TechStackSection />
       <ProcessSection />
+      <AboutSection />
       <PortfolioSection />
       <TestimonialsSection />
       <BookingSection />
@@ -32,6 +37,7 @@ const Index = () => {
       <ContactSection />
       <Footer />
       <LiveChat />
+      <FloatingWhatsApp />
       <BackToTop />
       <CookieConsent />
     </div>
