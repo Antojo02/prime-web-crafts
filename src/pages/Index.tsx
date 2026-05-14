@@ -9,19 +9,16 @@ import { PortfolioSection } from "@/components/PortfolioSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { BookingSection } from "@/components/BookingSection";
 import { LiveChat } from "@/components/LiveChat";
-import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
 import { FAQSection } from "@/components/FAQSection";
 import { ContactSection } from "@/components/ContactSection";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
-import { FloatingTechElements } from "@/components/FloatingTechElements";
 import { BackToTop } from "@/components/BackToTop";
 import { CookieConsent } from "@/components/CookieConsent";
 
 const Index = () => {
   return (
     <div className="min-h-screen relative">
-      <FloatingTechElements />
       <Navbar />
       <HeroSection />
       <MetricsSection />
@@ -37,7 +34,6 @@ const Index = () => {
       <ContactSection />
       <Footer />
       <LiveChat />
-      <FloatingWhatsApp />
       <BackToTop />
       <CookieConsent />
     </div>
