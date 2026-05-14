@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, Video, CheckCircle, X } from "lucide-react";
+import { Calendar, Clock, Video, CheckCircle, X, Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
+const CALENDAR_URL = "https://calendar.app.google/YmrAxBXvCZBVtXuo7";
+
 export const BookingSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   return (
     <>
