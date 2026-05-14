@@ -49,10 +49,12 @@ export const HeroSection = () => {
               <Button 
                 size="lg" 
                 className="gradient-bg text-primary-foreground font-semibold text-lg px-8 py-6 glow hover:opacity-90 transition-all group cursor-pointer"
-                onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
+                asChild
               >
-                Agendar Llamada Gratis
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+                <a href="https://calendar.app.google/YmrAxBXvCZBVtXuo7" target="_blank" rel="noopener noreferrer">
+                  Agendar Llamada Gratis
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+                </a>
               </Button>
               <Button 
                 size="lg" 

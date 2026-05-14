@@ -28,11 +28,13 @@ export const CTASection = () => {
             <Button 
               size="lg" 
               className="bg-white text-primary font-semibold text-lg px-8 py-6 hover:bg-white/90 transition-colors group cursor-pointer"
-              onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
+              asChild
             >
-              <Calendar className="mr-2" size={20} />
-              Agendar Llamada Gratis
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+              <a href="https://calendar.app.google/YmrAxBXvCZBVtXuo7" target="_blank" rel="noopener noreferrer">
+                <Calendar className="mr-2" size={20} />
+                Agendar Llamada Gratis
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+              </a>
             </Button>
           </div>
           <p className="text-sm text-primary-foreground/60 mt-6">
