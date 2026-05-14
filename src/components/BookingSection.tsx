@@ -97,22 +97,47 @@ export const BookingSection = () => {
           >
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="font-display font-bold text-lg">Reserva tu Consultoría</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <X size={20} />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <a href={CALENDAR_URL} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink size={16} className="mr-1" /> Abrir
+                  </a>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setIframeLoaded(false);
+                  }}
+                >
+                  <X size={20} />
+                </Button>
+              </div>
             </div>
-            <div className="p-2">
+            <div className="relative p-2 bg-muted/30 min-h-[500px]">
+              {!iframeLoaded && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+                  <Loader2 className="animate-spin text-primary" size={36} />
+                  <p className="text-sm text-muted-foreground">Cargando calendario…</p>
+                  <a
+                    href={CALENDAR_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline"
+                  >
+                    ¿Tarda demasiado? Abrir en Google Calendar
+                  </a>
+                </div>
+              )}
               <iframe
-                src="https://calendar.app.google/YmrAxBXvCZBVtXuo7"
-                style={{ border: 0 }}
+                src={CALENDAR_URL}
+                loading="lazy"
+                onLoad={() => setIframeLoaded(true)}
+                style={{ border: 0, opacity: iframeLoaded ? 1 : 0, transition: "opacity 0.4s" }}
                 width="100%"
                 height="500"
-                frameBorder="0"
-                title="Google Calendar - Reservar Consultoría"
+                title="Reservar consultoría con PRIME WEB"
               />
             </div>
           </motion.div>
