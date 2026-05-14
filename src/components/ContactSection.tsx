@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "34672861646";
-const LINKEDIN_URL = "https://www.linkedin.com/in/antoniojosetortajada";
+const LINKEDIN_URL = "https://www.linkedin.com/in/antonio-jos%C3%A9-tortajada-palaz%C3%B3n-756839269/";
 const EMAIL = "primeweb236@gmail.com";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgooedeg";
 

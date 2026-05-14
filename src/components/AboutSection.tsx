@@ -106,7 +106,7 @@ export const AboutSection = () => {
         {/* Experience strip */}
         <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
           {[
-            { icon: Award, label: "5+ años", sub: "construyendo web" },
+            { icon: Award, label: "1 año", sub: "construyendo web" },
             { icon: TrendingUp, label: "+30%", sub: "tráfico orgánico medio" },
             { icon: Sparkles, label: "100%", sub: "código a medida" },
           ].map((e) => (
