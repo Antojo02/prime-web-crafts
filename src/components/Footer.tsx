@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Instagram, Twitter, Linkedin, Facebook } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const footerLinks = {
@@ -23,10 +23,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Linkedin, href: "https://www.linkedin.com/in/antoniojosetortajada", label: "LinkedIn" },
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+  { icon: MessageCircle, href: "https://wa.me/34600000000", label: "WhatsApp" },
 ];
 
 const SmartLink = ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => {
@@ -138,7 +135,7 @@ export const Footer = () => {
             © 2026 PRIME WEB. Todos los derechos reservados.
           </p>
           <p className="text-sm text-background/50">
-            Hecho con ❤️ para impulsar tu negocio
+            Excelencia digital · Resultados medibles · Compromiso real
           </p>
         </div>
       </div>
