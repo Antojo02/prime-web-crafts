@@ -104,7 +104,7 @@ export const BookingSection = () => {
             </div>
             <div className="p-2">
               <iframe
-                src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ1ENS987BXNL5VCg8PpnRx7MHxBF7bMgv5RZ9NFfsYfYsUFqZ3Y-Q3n-xTR6Bqgontctwsvxwiv?gv=true"
+                src="https://calendar.google.com/calendar/u/0/r"
                 style={{ border: 0 }}
                 width="100%"
                 height="500"

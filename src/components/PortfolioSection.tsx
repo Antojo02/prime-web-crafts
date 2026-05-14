@@ -21,20 +21,20 @@ const projects = [
     tech: ["Astro", "Content Islands", "CSS"],
   },
   {
-    title: "Xpera",
-    category: "Tecnología",
-    description: "Soluciones tecnológicas innovadoras para empresas y startups",
-    url: "https://xpera.es/",
-    color: "from-purple-500 to-pink-600",
-    tech: ["Next.js", "TypeScript", "Tailwind"],
-  },
-  {
     title: "Magna Master Institute",
     category: "Educación",
     description: "Instituto de formación profesional con programas de maestría y certificaciones internacionales",
     url: "https://magnamasterinstitute.com/",
     color: "from-amber-500 to-orange-600",
     tech: ["Astro", "Content Islands", "SSG"],
+  },
+  {
+    title: "Máster en Interiorismo",
+    category: "Educación",
+    description: "Plataforma de formación especializada en diseño de interiores con programas profesionales",
+    url: "https://mastereninteriorismo.com/",
+    color: "from-rose-500 to-red-600",
+    tech: ["WordPress", "PHP", "CSS"],
   },
 ];
 
@@ -262,6 +262,8 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
 
 export const PortfolioSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const [showAll, setShowAll] = useState(false);
+  const visibleProjects = showAll ? projects : projects.slice(0, 3);
 
   return (
     <section ref={sectionRef} id="portafolio" className="section-padding overflow-hidden">
@@ -293,24 +295,31 @@ export const PortfolioSection = () => {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard key={index} project={project} index={index} />
+          {visibleProjects.map((project, index) => (
+            <ProjectCard key={project.url} project={project} index={index} />
           ))}
         </div>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Button variant="outline" size="lg" className="font-semibold group">
-            Ver todos los proyectos
-            <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
-          </Button>
-        </motion.div>
+        {projects.length > 3 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="text-center mt-12"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              className="font-semibold group"
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll ? "Ver menos" : "Ver más proyectos"}
+              <ArrowRight className={`ml-2 transition-transform ${showAll ? "rotate-180" : "group-hover:translate-x-1"}`} size={18} />
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   );
